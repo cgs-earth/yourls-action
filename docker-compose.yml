@@ -2,8 +2,7 @@ version: '3.6'
 
 services:
     mysql:
-        image: mysql:5.7
-        platform: linux/amd64
+        image: mysql:8
         container_name: ${YOURLS_DB_HOST:-mysql}
         build:
             context: yourls-mysql
@@ -19,3 +18,5 @@ services:
             YOURLS_DB_USER: ${YOURLS_DB_USER:-root}
             YOURLS_DB_PASSWORD: ${YOURLS_DB_PASSWORD:-arootpassword}
             YOURLS_DB_HOST: ${YOURLS_DB_HOST:-mysql}
+        volumes:
+            - ./namespaces:/namespaces

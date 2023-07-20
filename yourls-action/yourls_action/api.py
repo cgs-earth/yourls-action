@@ -37,7 +37,12 @@ import requests
 
 def connection():
     """Get a connection and a cursor from the pool"""
-    db = mysql.connector.connect(pool_name='yourls_loader')
+    db = mysql.connector.connect(
+        host=os.environ.get('YOURLS_DB_HOST') or 'mysql',
+        user=os.environ.get('YOURLS_DB_USER') or 'root',
+        password=os.environ.get('YOURLS_DB_PASSWORD') or 'arootpassword',
+        database="yourls"
+    )
     return (db, db.cursor())
 
 
@@ -55,14 +60,6 @@ def url_join(*parts):
 
 class yourls:
     # https://stackoverflow.com/questions/60286623/python-loses-connection-to-mysql-database-after-about-a-day
-    mysql.connector.connect(
-        host=os.environ.get('YOURLS_DB_HOST') or 'mysql',
-        user=os.environ.get('YOURLS_DB_USER') or 'root',
-        password=os.environ.get('YOURLS_DB_PASSWORD') or 'arootpassword',
-        database="yourls",
-        pool_name="yourls_loader",
-        pool_size=3
-    )
 
     def __init__(self, **kwargs):
         self.kwargs = kwargs
