@@ -36,25 +36,34 @@ branding:
   color: purple
 
 inputs:
-  filepath:
+  namespace_dir:
     description: "Filepath to load data from"
     required: true
-    default: "namespaces"
+    default: "./namespaces"
 outputs:
   yourls:
     description: "YOURLS MySQL dump named yourls.sql.gz"
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@v3
-      with:
-        repository: cgs-earth/yourls-action
     - shell: bash
       env:
-        YOURLS_SOURCE: ${{ inputs.filepath }}
+        GH_TOKEN: ${{ github.token }}
       run: |
-        docker compose up -d mysql
-        sleep 10
-        docker compose up yourls
+        gh repo clone cgs-earth/yourls-action
     - shell: bash
-      run: docker exec mysql sh /dump.sh | gzip > yourls.sql.gz
+      env:
+        YOURLS_SOURCE: ${{ inputs.namespace_dir }}
+      run: |
+        docker compose -f yourls-action/docker-compose.yml up -d mysql
+        sleep 30
+        docker compose -f yourls-action/docker-compose.yml up yourls
+        sleep 1
+    - shell: bash
+      run: |
+        docker exec mysql sh /dump.sh | gzip > yourls.sql.gz
+    - name: Archive SQL Dump
+      uses: actions/upload-artifact@v3
+      with:
+        name: yourls
+        path: ./yourls.sql.gz
