@@ -6,7 +6,7 @@ services:
         platform: linux/amd64
         container_name: ${YOURLS_DB_HOST:-mysql}
         build:
-            context: mysql
+            context: yourls-mysql
         environment:
             MYSQL_ROOT_USER: ${YOURLS_DB_USER:-root}
             MYSQL_ROOT_PASSWORD: ${YOURLS_DB_PASSWORD:-arootpassword}

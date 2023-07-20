@@ -12,8 +12,8 @@ This container is run during the Github workflow.
 
 The deployment is intended to run after the creation of a MySQL server with a valid YOURLS schema.
 
-- `mysql` is the Docker build a YOURLS deployment with for MySQL 5.7
-- `yourls_action` is the Docker build for the python package supporting the YOURLS population.
+- `yourls-mysql` is the Docker build a YOURLS deployment with for MySQL 5.7
+- `yourls-action` is the Docker build for the python package supporting the YOURLS population.
 - `docker-compose.yml` is the Docker compose setup for the two containers.
 
 ### Usage
