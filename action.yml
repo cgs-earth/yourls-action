@@ -40,6 +40,10 @@ inputs:
     description: "Filepath to load data from"
     required: true
     default: "./namespaces"
+  cache_artifact:
+    description: "Boolean to uplaod artifact"
+    required: false
+    default: true
 outputs:
   yourls:
     description: "YOURLS MySQL dump named yourls.sql.gz"
@@ -63,6 +67,7 @@ runs:
       run: |
         docker exec mysql sh /dump.sh | gzip > yourls.sql.gz
     - name: Archive SQL Dump
+      if: ${{ inputs.cache_artifact }}
       uses: actions/upload-artifact@v3
       with:
         name: yourls
