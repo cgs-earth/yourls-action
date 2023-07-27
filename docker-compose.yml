@@ -2,13 +2,17 @@ version: '3.6'
 
 services:
     mysql:
-        image: ghcr.io/cgs-earth/yourls-mysql:latest
+        image: ghcr.io/cgs-earth/yourls-mysql:0.3.0
+        build:
+            context: yourls-mysql
         container_name: ${YOURLS_DB_HOST:-mysql}
         environment:
             MYSQL_ROOT_USER: ${YOURLS_DB_USER:-root}
             MYSQL_ROOT_PASSWORD: ${YOURLS_DB_PASSWORD:-arootpassword}
     yourls:
-        image: ghcr.io/cgs-earth/yourls-action:latest
+        image: ghcr.io/cgs-earth/yourls-action:0.3.0
+        build:
+            context: yourls-action
         container_name: yourls-action
         environment:
             YOURLS_DB_USER: ${YOURLS_DB_USER:-root}
