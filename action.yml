@@ -54,9 +54,9 @@ runs:
       env:
         GH_TOKEN: ${{ github.token }}
       run: |
-        gh release download 0.3.0 -R cgs-earth/yourls-action -A zip
-        unzip yourls-action-0.3.0
-        mv yourls-action-0.3.0 yourls-action
+        gh release download 0.3.1 -R cgs-earth/yourls-action -A zip
+        unzip yourls-action-0.3.1
+        mv yourls-action-0.3.1 yourls-action
     - shell: bash
       env:
         YOURLS_SOURCE: ${{ inputs.namespace_dir }}
