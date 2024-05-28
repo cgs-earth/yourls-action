@@ -55,24 +55,31 @@ def url_join(*parts):
 
 class yourls:
     # https://stackoverflow.com/questions/60286623/python-loses-connection-to-mysql-database-after-about-a-day
-    mysql.connector.connect(
-        host=os.environ.get('YOURLS_DB_HOST') or 'mysql',
-        user=os.environ.get('YOURLS_DB_USER') or 'root',
-        password=os.environ.get('YOURLS_DB_PASSWORD') or 'arootpassword',
-        database="yourls",
-        pool_name="yourls_loader",
-        pool_size=3
-    )
+    try:
+        mysql.connector.connect(
+            host=os.environ.get('YOURLS_DB_HOST') or 'mysql',
+            user=os.environ.get('YOURLS_DB_USER') or 'root',
+            password=os.environ.get('YOURLS_DB_PASSWORD') or 'arootpassword',
+            database="yourls",
+            pool_name="yourls_loader",
+            pool_size=3
+        )
+        connection = True
+    except mysql.connector.errors.DatabaseError as err:
+        print(f'No SQL connection found: {err}')
+        connection = False
 
     def __init__(self, **kwargs):
         self.kwargs = kwargs
-        mydb, cursor = connection()
-        sql_statement = 'DELETE FROM yourls_url WHERE ip = "0.0.0.0"'
-        cursor.execute(sql_statement)
-        mydb.commit()
-        print(cursor.rowcount, "was deleted.")
-        cursor.close()
-        mydb.close()
+        self.history = set()
+        if self.connection:
+            mydb, cursor = connection()
+            sql_statement = 'DELETE FROM yourls_url WHERE ip = "0.0.0.0"'
+            cursor.execute(sql_statement)
+            mydb.commit()
+            print(cursor.rowcount, "was deleted.")
+            cursor.close()
+            mydb.close()
 
     def _check_kwargs(self, keys):
         """
@@ -162,6 +169,38 @@ class yourls:
         chunky_parsed = self.chunkify(parsed_csv, 10000)
         for chunk in chunky_parsed:
             self.post_mysql(file, chunk)
+
+    def _validate_csvs(self, files):
+        """
+        Splits list of csv files into individual csv files.
+
+        :param files: required, string. URL to be shortened.
+        """
+        for f in files:
+            self.validate_csv(f)
+
+    def validate_csv(self, file):
+        """
+        Parses and validates CSV file.
+
+        :param file: required, name of csv to be shortened
+        """
+        if isinstance(file, list):
+            self._validate_csvs(file)
+            return
+
+        parsed_csv = self.parse_csv(file)
+
+        chunky_parsed = self.chunkify(parsed_csv, 1)
+        uri_stem = self.kwargs['uri_stem']
+        for _ in chunky_parsed:
+            chunk = _.strip().split(',')
+            [pid_, target_] = chunk[:2]
+            if pid_ in self.history:
+                print(f'Duplicate IRI detected at {uri_stem}{pid_}')
+                exit(1)
+            else:
+                self.history.add(pid_)
 
     def parse_csv(self, filename):
         """

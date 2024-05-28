@@ -73,5 +73,25 @@ def run(ctx, **kwargs):
             urls.handle_csv(walk_path(p))
 
 
+@click.command()
+@click.pass_context
+@click.argument('path', type=str, nargs=-1)
+@click.option('-s', '--uri_stem', type=str, default='https://geoconnex.us/',
+              help='uri stem to be removed from short url for keyword')
+@click.option('-k', '--keyword', type=str, default='id',
+              help='field in CSV to be used as keyword')
+@click.option('-l', '--long_url', type=str, default='target',
+              help='field in CSV to be used as long url')
+@click.option('-t', '--title', type=str, default='description',
+              help='field in CSV to be used as title')
+def validate(ctx, **kwargs):
+    urls = yourls(**kwargs)
+    for p in kwargs['path']:
+        if p.endswith(CSV):
+            urls.validate_csv(p)
+        else:
+            urls.validate_csv(walk_path(p))
+
+
 if __name__ == "__main__":
     run()
