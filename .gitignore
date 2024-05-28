@@ -133,3 +133,5 @@ dmypy.json
 *.pyc
 yourls.sql.gz
 /namespaces/
+bin/
+pyvenv.cfg
