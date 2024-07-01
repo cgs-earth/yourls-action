@@ -31,7 +31,7 @@ __version__ = '0.3.1'
 
 import click
 
-from yourls_action.cli import run
+from yourls_action.cli import run, validate
 
 
 @click.group()
@@ -42,3 +42,4 @@ def cli():
 
 
 cli.add_command(run)
+cli.add_command(validate)
