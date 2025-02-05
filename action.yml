@@ -70,7 +70,7 @@ runs:
         docker exec mysql sh /dump.sh | gzip > yourls.sql.gz
     - name: Archive SQL Dump
       if: ${{ inputs.cache_artifact }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: yourls
         path: ./yourls.sql.gz
