@@ -32,6 +32,7 @@ import csv
 from datetime import datetime
 import mysql.connector
 import os
+from pathlib import Path
 import requests
 
 
@@ -112,6 +113,7 @@ class yourls:
           pyourls3.exceptions.Pyourls3APIError
         """
         print(filename)
+        filename = Path(filename)
         if not filename:
             raise ValueError('filename')
 
@@ -126,7 +128,7 @@ class yourls:
 
         split_ = [
             line.split(',')[:2]  # Only keep id and target
-            + [filename]  # Use filename as title
+            + [filename.name]  # Use filename as title
             + extra
             for line in lines[:-1]
         ]

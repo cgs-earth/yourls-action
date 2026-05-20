@@ -1,4 +1,4 @@
-FROM python:3.9.13-slim
+FROM python:3.12.13-slim
 
 COPY . /yourls-action
 WORKDIR /yourls-action

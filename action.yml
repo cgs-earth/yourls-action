@@ -62,7 +62,7 @@ runs:
         YOURLS_SOURCE: ${{ inputs.namespace_dir }}
       run: |
         docker compose -f yourls-action/docker-compose.yml up -d mysql
-        sleep 30
+        sleep 15
         docker compose -f yourls-action/docker-compose.yml up yourls
         sleep 1
     - shell: bash
