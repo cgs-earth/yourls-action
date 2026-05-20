@@ -123,14 +123,13 @@ class yourls:
 
         file = csv_ if csv_ else open(filename, 'r')
         lines = file.split("\n")
-        split_ = [line.split(',') for line in lines[:-1]]
-        for line in split_:
-            if len(line) > 3:
-                line[2] = ','.join(line[2:])
-                while len(line) > 3:
-                    line.pop(-1)
-            if len(line) == 3:
-                line.extend(extra)
+
+        split_ = [
+            line.split(',')[:2]  # Only keep id and target
+            + [filename]  # Use filename as title
+            + extra
+            for line in lines[:-1]
+        ]
 
         # Commit file to database
         SQL_STATEMENT = ("INSERT INTO yourls_url "
